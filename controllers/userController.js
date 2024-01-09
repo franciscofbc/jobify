@@ -8,8 +8,11 @@ export const getCurretUser = async (req, res) => {
   res.status(StatusCodes.OK).json({ user: userWithoutPassword });
 };
 
+//how many users and jobs we have in our database
 export const getApplicationStats = async (req, res) => {
-  res.status(StatusCodes.OK).json({ msg: 'get application stats' });
+  const users = await User.countDocuments();
+  const jobs = await Job.countDocuments();
+  res.status(StatusCodes.OK).json({ users, jobs });
 };
 
 export const updateUser = async (req, res) => {
