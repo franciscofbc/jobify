@@ -1,4 +1,4 @@
-import { Outlet } from 'react-router-dom'
+import { Outlet, useLoaderData } from 'react-router-dom'
 import Wrapper from '../assets/wrappers/Dashboard'
 import { BigSideBar, Navbar, SmallSideBar } from '../components'
 import { createContext, useContext, useState } from 'react'
@@ -6,7 +6,14 @@ import { checkDefaultTheme } from '../App'
 
 const DashboardContext = createContext()
 
+export const loader = () => {
+    return 'loader test'
+}
+
 const DashboardLayout = () => {
+    const data = useLoaderData()
+    console.log(data);
+
     //temp
     const user = { name: 'fbc' }
 
