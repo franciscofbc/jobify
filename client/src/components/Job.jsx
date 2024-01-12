@@ -28,14 +28,14 @@ const Job = ({ _id, position, company, jobLocation, jobType, createdAt, jobStatu
                 <footer className="actions">
                     {/* .. approach or /dashboard/edit-job */}
                     <Link className="btn edit-btn" to={`../edit-job/${_id}`}>edit</Link>
-                    <Form>
+                    <Form method="DELETE" action={`../delete-job/${_id}`}>
                         <button type="submit" className="btn delete-btn">
                             delete
                         </button>
                     </Form>
                 </footer>
-            </div>
-        </Wrapper>
+            </div >
+        </Wrapper >
     )
 }
 export default Job
