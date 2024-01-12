@@ -55,11 +55,12 @@ const Wrapper = styled.article`
     border-radius: var(--border-radius);
     text-transform: capitalize;
     letter-spacing: var(--letter-spacing);
-    text-align: center;
+    /* text-align: center; */
     width: 100px;
     height: 30px;
     display: grid;
-    align-items: center;
+    /* align-items: center; */
+    place-items: center;
   }
   .actions {
     margin-top: 1rem;
