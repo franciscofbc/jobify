@@ -22,6 +22,7 @@ import { authenticateUser } from './middleware/authMiddleware.js';
 
 //public
 const __dirname = dirname(fileURLToPath(import.meta.url));
+console.log(__dirname);
 app.use(express.static(path.resolve(__dirname, './public')));
 
 if (process.env.NODE_ENV === 'development') {
