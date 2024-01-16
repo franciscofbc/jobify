@@ -1,6 +1,5 @@
 import { Router } from 'express';
 const router = Router();
-
 import {
   createJob,
   deleteJob,
@@ -12,15 +11,19 @@ import {
   validateJobInput,
   validateIdParams,
 } from '../middleware/validationMiddleware.js';
+import { checkForTestUser } from '../middleware/authMiddleware.js';
 
 // router.get('/', getAllJobs);
 // router.post('/', createJob);
 
-router.route('/').get(getAllJobs).post(validateJobInput, createJob);
+router
+  .route('/')
+  .get(getAllJobs)
+  .post(checkForTestUser, validateJobInput, createJob);
 router
   .route('/:id')
   .get(validateIdParams, getSingleJob)
-  .patch(validateJobInput, validateIdParams, updateJob)
-  .delete(validateIdParams, deleteJob);
+  .patch(checkForTestUser, validateJobInput, validateIdParams, updateJob)
+  .delete(checkForTestUser, validateIdParams, deleteJob);
 
 export default router;
