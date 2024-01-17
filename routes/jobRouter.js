@@ -1,4 +1,4 @@
-import { Router } from 'express';
+import { Router } from "express";
 const router = Router();
 import {
   createJob,
@@ -6,22 +6,26 @@ import {
   updateJob,
   getAllJobs,
   getSingleJob,
-} from '../controllers/jobController.js';
+  showStats,
+} from "../controllers/jobController.js";
 import {
   validateJobInput,
   validateIdParams,
-} from '../middleware/validationMiddleware.js';
-import { checkForTestUser } from '../middleware/authMiddleware.js';
+} from "../middleware/validationMiddleware.js";
+import { checkForTestUser } from "../middleware/authMiddleware.js";
 
 // router.get('/', getAllJobs);
 // router.post('/', createJob);
 
 router
-  .route('/')
+  .route("/")
   .get(getAllJobs)
   .post(checkForTestUser, validateJobInput, createJob);
+
+router.route("/stats").get(showStats);
+
 router
-  .route('/:id')
+  .route("/:id")
   .get(validateIdParams, getSingleJob)
   .patch(checkForTestUser, validateJobInput, validateIdParams, updateJob)
   .delete(checkForTestUser, validateIdParams, deleteJob);
