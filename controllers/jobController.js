@@ -29,8 +29,18 @@ export const getAllJobs = async (req, res) => {
   };
   const sortKey = sortOption[sort] || sortOption.newest;
 
-  const jobs = await Job.find(queryObj).sort(sortKey);
-  res.status(StatusCodes.OK).json({ jobs });
+  const page = Number(req.query.page) || 1;
+  const limit = Number(req.query.limit) || 10;
+  const skip = (page - 1) * limit;
+
+  const jobs = await Job.find(queryObj).sort(sortKey).skip(skip).limit(limit);
+
+  const totalJob = await Job.countDocuments(queryObj);
+  const totalPages = Math.ceil(totalJob / limit);
+
+  res
+    .status(StatusCodes.OK)
+    .json({ totalJob, totalPages, currentPage: page, jobs });
 };
 
 export const createJob = async (req, res) => {
