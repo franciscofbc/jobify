@@ -2,6 +2,7 @@ import { useAllJobsContext } from "../pages/AllJobs";
 import Wrapper from "../assets/wrappers/JobsContainer";
 import Job from "./Job";
 import PageBtnContainer from "./PageBtnContainer";
+import PageBtnContainerComplex from "./PageBtnContainerComplex";
 
 const JobsContainer = () => {
   const {
@@ -26,7 +27,7 @@ const JobsContainer = () => {
           return <Job key={job._id} {...job} />;
         })}
       </div>
-      {totalPages > 1 && <PageBtnContainer />}
+      {totalPages > 1 && <PageBtnContainerComplex />}
     </Wrapper>
   );
 };
