@@ -27,7 +27,7 @@ const JobsContainer = () => {
           return <Job key={job._id} {...job} />;
         })}
       </div>
-      {totalPages > 1 && <PageBtnContainerComplex />}
+      {totalPages > 1 && <PageBtnContainer />}
     </Wrapper>
   );
 };
