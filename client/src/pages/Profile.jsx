@@ -1,10 +1,10 @@
-import { Form, useNavigation, useOutletContext } from "react-router-dom"
+import { Form, redirect, useNavigation, useOutletContext } from "react-router-dom"
 import Wrapper from "../assets/wrappers/DashboardFormPage"
 import { FormRow } from "../components";
 import { toast } from "react-toastify";
 import customFetch from "../utils/customFetch";
 
-export const action = async ({ request }) => {
+export const action = (queryClient) => async ({ request }) => {
     const formData = await request.formData()
     const file = formData.get('avatar')
     if (file && file.size > 500000) {
@@ -13,12 +13,14 @@ export const action = async ({ request }) => {
     }
     try {
         const response = await customFetch.patch('/users/update-user', formData)
+        queryClient.invalidateQueries(['user'])
         toast.success(response?.data?.msg)
+        return redirect('/dashboard')
     } catch (error) {
         console.log(error);
         toast.error(error?.response?.data?.msg)
+        return null
     }
-    return null
 }
 
 const Profile = () => {

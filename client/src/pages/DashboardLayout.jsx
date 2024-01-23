@@ -1,7 +1,6 @@
 import {
   Outlet,
   redirect,
-  useLoaderData,
   useNavigate,
   useNavigation,
 } from "react-router-dom";
@@ -11,13 +10,22 @@ import { createContext, useContext, useState } from "react";
 import { checkDefaultTheme } from "../App";
 import customFetch from "../utils/customFetch";
 import { toast } from "react-toastify";
+import { useQuery } from "@tanstack/react-query";
 
 const DashboardContext = createContext();
 
-export const loader = async () => {
+const userQuery = {
+  queryKey: ['user'],
+  queryFn: async () => {
+    const { data } = await customFetch.get('/users/current-user')
+    return data
+  }
+}
+
+export const loader = (queryClient) => async () => {
   try {
-    const { data } = await customFetch.get("/users/current-user");
-    return data;
+    await queryClient.ensureQueryData(userQuery)
+    return null;
   } catch (error) {
     console.log(error);
     toast.error(error?.response?.data?.msg);
@@ -25,9 +33,9 @@ export const loader = async () => {
   }
 };
 
-const DashboardLayout = () => {
+const DashboardLayout = ({ queryClient }) => {
   const navigate = useNavigate();
-  const { user } = useLoaderData();
+  const { data: { user } } = useQuery(userQuery)
   const navigation = useNavigation();
   const isPageLoading = navigation.state === "loading";
 
@@ -48,6 +56,7 @@ const DashboardLayout = () => {
   const logoutUser = async () => {
     navigate("/");
     const response = await customFetch.get("auth/logout");
+    queryClient.invalidateQueries()
     toast.success(response?.data?.msg);
   };
 
