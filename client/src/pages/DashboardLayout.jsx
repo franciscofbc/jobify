@@ -1,12 +1,7 @@
-import {
-  Outlet,
-  redirect,
-  useNavigate,
-  useNavigation,
-} from "react-router-dom";
+import { Outlet, redirect, useNavigate, useNavigation } from "react-router-dom";
 import Wrapper from "../assets/wrappers/Dashboard";
 import { BigSideBar, Loading, Navbar, SmallSideBar } from "../components";
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { checkDefaultTheme } from "../App";
 import customFetch from "../utils/customFetch";
 import { toast } from "react-toastify";
@@ -15,16 +10,16 @@ import { useQuery } from "@tanstack/react-query";
 const DashboardContext = createContext();
 
 const userQuery = {
-  queryKey: ['user'],
+  queryKey: ["user"],
   queryFn: async () => {
-    const { data } = await customFetch.get('/users/current-user')
-    return data
-  }
-}
+    const { data } = await customFetch.get("/users/current-user");
+    return data;
+  },
+};
 
 export const loader = (queryClient) => async () => {
   try {
-    await queryClient.ensureQueryData(userQuery)
+    await queryClient.ensureQueryData(userQuery);
     return null;
   } catch (error) {
     console.log(error);
@@ -35,12 +30,15 @@ export const loader = (queryClient) => async () => {
 
 const DashboardLayout = ({ queryClient }) => {
   const navigate = useNavigate();
-  const { data: { user } } = useQuery(userQuery)
+  const {
+    data: { user },
+  } = useQuery(userQuery);
   const navigation = useNavigation();
   const isPageLoading = navigation.state === "loading";
 
   const [showSideBar, setShowSideBar] = useState(false);
   const [isDarkTheme, setIsDarkTheme] = useState(checkDefaultTheme());
+  const [isAuthError, setIsAuthError] = useState(false);
 
   const toggleSideBar = () => {
     setShowSideBar(!showSideBar);
@@ -56,9 +54,26 @@ const DashboardLayout = ({ queryClient }) => {
   const logoutUser = async () => {
     navigate("/");
     const response = await customFetch.get("auth/logout");
-    queryClient.invalidateQueries()
+    queryClient.invalidateQueries();
     toast.success(response?.data?.msg);
   };
+
+  customFetch.interceptors.response.use(
+    (response) => {
+      return response;
+    },
+    (error) => {
+      if (error?.response?.status === 401) {
+        setIsAuthError(true);
+      }
+      return Promise.reject(error);
+    }
+  );
+
+  useEffect(() => {
+    if (!isAuthError) return;
+    logoutUser();
+  }, [isAuthError]);
 
   return (
     <DashboardContext.Provider
